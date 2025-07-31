@@ -92,10 +92,19 @@ const Login = () => {
         email: formData.email,
         password: formData.password,
       });
+      let normalizedUser = null;
 
-      //  Save user and token to localStorage
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user)); // <-- Add this
+      if(res?.data?.token && res?.data?.user) {
+        const user = res.data.user;
+         normalizedUser = {
+          ...user,
+          _id:user._id || user.id,
+        }
+        //  Save user and token to localStorage
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(normalizedUser)); // <-- Add this
+      }
+
 
       // for two factor
       if (res.data.twoFactor === true) {
@@ -103,10 +112,11 @@ const Login = () => {
         setOtpStep(true)
         setEmailForOtp(formData.email);
         return;
-      }const userId = res.data?.user?._id || res.data?.user?.id;
-      if (userId) {
-        await logDeviceSession(userId);
       }
+      // const userId = res.data?.user?._id || res.data?.user?.id;
+      localStorage.setItem("userId", normalizedUser._id)
+    
+        await logDeviceSession(normalizedUser._id);
 
       toast.success("Login Successful!");
       navigate("/dashboard");

@@ -65,4 +65,13 @@ const usersSchema = new mongoose.Schema(
   }
 );
 
+// ✅ Keep _id and do NOT convert it to id
+usersSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    return ret;
+  },
+});
+
 module.exports = mongoose.model("Users", usersSchema);

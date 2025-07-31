@@ -13,7 +13,7 @@ import { useAuth } from "../../auth/AuthContext";
 
 const UserProfile = () => {
   const { user } = useAuth();
-  const id = user?._id;
+  const id = user?._id || user?.id;
   const [userData, setUserData] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [imageFiles, setImageFiles] = useState({ profileImage: null });

@@ -70,7 +70,7 @@ import ThemeCustomizer from "../pages/themes/ThemeCustomizer.jsx";
 import LanguageSwitcher from "../utils/LanguageSwitch/LanguageSwitcher.jsx";
 import ResetPassword from "../components/auth/ResetPassword.jsx";
 import Settings from "../pages/setting28-07-2025/Settings.jsx";
-import UserProfile from "../components/componentsetting28-07-2025/profile/Profile.jsx";
+import UserProfiles from "../components/componentsetting28-07-2025/profile/Profile.jsx";
 import Security from "../components/componentsetting28-07-2025/security/Security.jsx";
 import Notification from "../components/componentsetting28-07-2025/notification/Notification.jsx";
 import ConnectedApps from "../components/componentsetting28-07-2025/connectedApps/ConnectedApps.jsx";
@@ -110,7 +110,7 @@ const AppRoutes = () => {
         {/* <Route path="/general-settings" element={<Setting />} /> */}
         {/* <Route path="/general-settings" element={<Settings />} /> */}
         <Route path="/general-settings" element={<Settings />}>
-          <Route path="profile/:id" element={<UserProfile />} />
+          <Route path="profile/:id" element={<UserProfiles />} />
           <Route path="security" element={<Security />} />
           <Route path="notification" element={<Notification />} />
           <Route path="connectedapps" element={<ConnectedApps />} />
