@@ -9,8 +9,12 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         // Simulate checking for user (e.g., from localStorage)
         const loggedUser = localStorage.getItem("user");
-        if (loggedUser) {
-            setUser(JSON.parse(loggedUser));
+        try {
+            if (loggedUser && loggedUser !== "undefined") {
+                setUser(JSON.parse(loggedUser));
+            }
+        }catch(error) {
+            console.error("Failed to parse user from localstorage", error)
         }
     }, []);
 
