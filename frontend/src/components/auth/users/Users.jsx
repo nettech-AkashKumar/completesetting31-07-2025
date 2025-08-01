@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FaFileExcel, FaFilePdf } from "react-icons/fa";
 import { TbEdit, TbEye, TbSearch, TbTrash } from "react-icons/tb";
 import BASE_URL from "../../../pages/config/config";
@@ -11,6 +11,8 @@ import { toast } from "react-toastify";
 const Users = () => {
   const [activeRoles, setActiveRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("  ")
+  const [selectedStatus, setSelectedStatus] = useState("")  //for active , inactive
   const fileInputRef = useRef(null);
   const handleIconClick = () => {
     if (fileInputRef.current) {
@@ -32,7 +34,7 @@ const Users = () => {
 
   const [selectedImages, setSelectedImages] = useState([]);
   console.log(users);
-  console.log("Uploaded image:", profileImage?.[0]?.url);
+  // console.log("Uploaded image:", profileImage?.[0]?.url);
 
   const [editUserId, setEditUserdId] = useState(null);
 
@@ -70,6 +72,35 @@ const Users = () => {
     fetchUsers();
   }, []);
 
+  
+  const filteredUsers = useMemo(() => {
+    if(!searchTerm || !users.length || !activeRoles.length) return users;
+    return users.filter((user) => {
+    let roleName = "";
+
+    // Case 1: user.role is a populated object with roleName
+    if (typeof user.role === "object" && user.role?.roleName) {
+      roleName = user.role.roleName;
+    }
+
+    // Case 2: user.role is an ID, look it up from activeRoles
+    else if (typeof user.role === "string") {
+      const matchedRole = activeRoles.find((r) => String(r.value) === String(user.role));
+      roleName = matchedRole?.label || "";
+    }
+
+else if (typeof user.role === "object" && user.role?._id) {
+  const matchedRole = activeRoles.find((r) => String(r.value) === String(user.role._id));
+  roleName = matchedRole?.label || "";
+
+}
+
+const matchesSearch = roleName.toLowerCase().includes(searchTerm.trim().toLowerCase())
+const matchesStatus = selectedStatus ? user.status === selectedStatus : true
+
+    return matchesSearch && matchesStatus;
+  });
+  }, [searchTerm, users, activeRoles])
 
 
 
@@ -90,7 +121,7 @@ const Users = () => {
     formData.append("role", selectedRole.value); // Role ID
     formData.append("status", status ? "Active" : "Inactive");
 
-    // ✅ Append image if provided (multiple format, even if only one)
+    //  Append image if provided (multiple format, even if only one)
     if (selectedImages.length > 0) {
       selectedImages.forEach((file) => {
         formData.append("profileImage", file); // match backend's `upload.array("profileImage")`
@@ -179,7 +210,7 @@ const Users = () => {
 
       formData.append('status', editUserData.status ? "Active" : "Inactive");
 
-      if (editUserData.profileImage) {
+      if (editUserData.profileImage && typeof editUserData.profileImage !== 'string') {
         formData.append('profileImage', editUserData.profileImage);
       }
 
@@ -199,22 +230,28 @@ const Users = () => {
 
 
   const handleOpenEditModal = (user) => {
+    const getMatchingRole = (roleId) => {
+      return activeRoles.find((role) => role.value === roleId)
+    }
+    const roleId = typeof user.role === "string" ? user.role : user.role?._id || user.role?.value;
+    const selectedRole = getMatchingRole(roleId)
+
     setEditUserdId(user._id);
 
-    // Find the selected role from activeRoles
-    const selectedRole = activeRoles.find(role => role.value === user.role);
+    // // Find the selected role from activeRoles
+    // const selectedRole = activeRoles.find(role => role.value === user.role);
 
     setEditUserData({
       firstName: user.firstName || '',
       lastName: user.lastName || '',
       email: user.email || '',
       phone: user.phone || '',
-      role: selectedRole || { label: user.role, value: user.role }, // fallback
+      role: selectedRole || { label: 'Unknown Role', value: user.role }, // fallback
       status: user.status ?? true,
       // profileImage: null, // only updated if changed
-    profileImage: typeof user.profileImage === "string"
-  ? user.profileImage
-  : user.profileImage?.url || null
+      profileImage: typeof user.profileImage === "string"
+      ? user.profileImage
+      : user.profileImage?.url || null
 
     });
   };
@@ -257,18 +294,22 @@ const Users = () => {
         <div className="card">
           <div className="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
             <div className="search-set">
-              <div className="search-input">
-                <span className="btn-searchset position-relative">
+              <div className="search-input" style={{position:'relative'}}>
+                <span className="btn-searchset position-relative" style={{display:'flex', justifyContent:'space-between'}}>
+                  {/* {searchTerm === '' && (
+                    <TbSearch
+                      className="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+                      size={20}
+                      style={{position:'absolute', left:'10px', top:'50%', transform:'translateY(-50%)', pointerEvents:'none'}}
+                    />
+                  )} */}
                   <input
                     type="text"
                     placeholder="Search roles..."
                     className="form-control ps-5"
-                  // value={searchTerm}
-                  // onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                  <TbSearch
-                    className="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
-                    size={20}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{paddingLeft:'20px'}}
                   />
                 </span>
               </div>
@@ -285,18 +326,29 @@ const Users = () => {
                 <ul className="dropdown-menu  dropdown-menu-end p-3">
                   <li>
                     <a
-                      href="javascript:void(0);"
+                      href="#"
                       className="dropdown-item rounded-1"
+                      onClick={() => setSelectedStatus("Active")}
                     >
                       Active
                     </a>
                   </li>
                   <li>
                     <a
-                      href="javascript:void(0);"
+                      href="#"
                       className="dropdown-item rounded-1"
+                      onClick={() => setSelectedStatus("Inactive")}
                     >
                       Inactive
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="dropdown-item rounded-1"
+                      onClick={() => setSelectedStatus("")}
+                    >
+                      Clear Filter
                     </a>
                   </li>
                 </ul>
@@ -323,8 +375,8 @@ const Users = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.length > 0 ? (
-                    users.map((user) => (
+                  {filteredUsers.length > 0 ? (
+                    filteredUsers.map((user) => (
                       <tr>
                         <td>
                           <label className="checkboxs">
@@ -339,26 +391,7 @@ const Users = () => {
                               className="avatar avatar-md me-2"
                             >
 
-                              {/* {user.profileImage &&
-                                user.profileImage.length > 0 ? (
-                                <img
-                                  src={user.profileImage[0].url}
-                                  alt="Profile"
-                                  style={{
-                                    width: "50px",
-                                    height: "50px",
-                                    borderRadius: "10%",
-                                  }}
-                                />
-                              ) : (
-                                <div
-                                  className="bg-secondary text-white  d-flex justify-content-center align-items-center"
-                                  style={{ width: "40px", height: "40px" }}
-                                >
-                                  {user.firstName?.charAt(0)}
-                                  {user.lastName?.charAt(0)}
-                                </div>
-                              )} */}
+                              
                               {user.profileImage &&
                                 user.profileImage.url ? (
                                 <img
@@ -442,9 +475,9 @@ const Users = () => {
         {/* /product list */}
 
         {/* Add User */}
-        <div className="modal fade" id="add-user">
+        <div className="modal " id="add-user">
           <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
+            <div className="modal-content" style={{width:'500px'}}>
               <div className="page-wrapper-new p-0">
                 <div className="content">
                   <div className="modal-header">
@@ -481,7 +514,7 @@ const Users = () => {
                                         selectedImages[0]
                                       )}
                                       alt="Preview"
-                                      height="60"
+                                      style={{height:'120px', width:'120px', borderRadius:'13px'}}
                                     />
                                   ) : (
                                     <>
@@ -506,7 +539,7 @@ const Users = () => {
                                   />
 
                                   <div className="image-uploads">
-                                    <h4 onClick={handleIconClick}>Upload Image</h4>
+                                    <h4 style={{cursor:'pointer'}} onClick={handleIconClick}>Upload Image</h4>
                                   </div>
                                 </div>
                                 <p className="fs-13 mt-2">
@@ -671,9 +704,9 @@ const Users = () => {
       /> */}
 
         {/* Edit User */}
-        <div className="modal fade" id="edit-user">
+        <div className="modal" id="edit-user">
           <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
+            <div className="modal-content" style={{width:'500px'}}>
               <div className="page-wrapper-new p-0">
                 <div className="content">
                   <div className="modal-header">
@@ -707,12 +740,15 @@ const Users = () => {
                                   }
                                   className="object-fit-cover h-100 rounded-1"
                                   alt="user"
+                                  style={{height:'120px', width:'120px', borderRadius:'13px'}}
                                 />
                               </div>
                               <div className="mb-3">
                                 <div className="image-upload mb-0">
                                   <input
                                     type="file"
+                                    accept="image/*"
+                                    ref={fileInputRef}
                                     onChange={(e) =>
                                       setEditUserData({
                                         ...editUserData,
@@ -721,7 +757,7 @@ const Users = () => {
                                     }
                                   />
                                   <div className="image-uploads">
-                                    <h4 onClick={handleIconClick}>Change Image</h4>
+                                    <h4 style={{cursor:'pointer'}} onClick={handleIconClick}>Change Image</h4>
                                   </div>
                                 </div>
                                 <p className="mt-2">JPEG, PNG up to 2 MB</p>
@@ -768,10 +804,11 @@ const Users = () => {
                             </label>
                             <Select
                               options={activeRoles}
-                              value={selectedRole}
+                              value={editUserData.role}
+                              isDisabled={editUserData.role.label === "Unknown Role"}
                               onChange={(selectedOption) => {
-                                setSelectedRole(selectedOption);
-                                setEditUserData({ ...editUserData, role: selectedOption?.value });
+                                
+                                setEditUserData({ ...editUserData, role: selectedOption });
                               }}
                               placeholder="Search or select a role..."
                               isSearchable
