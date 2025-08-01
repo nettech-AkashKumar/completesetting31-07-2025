@@ -100,7 +100,7 @@ const matchesStatus = selectedStatus ? user.status === selectedStatus : true
 
     return matchesSearch && matchesStatus;
   });
-  }, [searchTerm, users, activeRoles])
+  }, [searchTerm, selectedStatus, users, activeRoles])
 
 
 
@@ -314,42 +314,60 @@ const matchesStatus = selectedStatus ? user.status === selectedStatus : true
                 </span>
               </div>
             </div>
-            <div className="d-flex table-dropdown my-xl-auto right-content align-items-center flex-wrap row-gap-3">
+            <div className="d-flex table-dropdown my-xl-auto right-content align-items-center flex-wrap row-gap-3" style={{gap:'10px', alignItems:'center'}}>
               <div className="dropdown">
-                <a
-                  href="javascript:void(0);"
+                <button
                   className="dropdown-toggle btn btn-white btn-md d-inline-flex align-items-center"
                   data-bs-toggle="dropdown"
+                  style={{backgroundColor:'#fff',
+                    border:'1px solid #ccc',
+                    color:'#333',
+                    padding:'8px 12px',
+                    borderRadius:'6px',
+                    fontSize:'14px'
+                  }}
                 >
-                  Status
-                </a>
-                <ul className="dropdown-menu  dropdown-menu-end p-3">
+                  {selectedStatus || 'Status'}
+                </button>
+                <ul className="dropdown-menu  dropdown-menu-end p-3" style={{minWidth:'150px'}}>
                   <li>
-                    <a
-                      href="#"
+                    <button
                       className="dropdown-item rounded-1"
                       onClick={() => setSelectedStatus("Active")}
+                      style={{
+                        color:'#333',
+                        padding:'6px 10px',
+                        backgroundColor:selectedStatus === 'Active' ? '#fofofo' :'transparent'
+                      }}
                     >
                       Active
-                    </a>
+                    </button>
                   </li>
                   <li>
-                    <a
-                      href="#"
+                    <button
                       className="dropdown-item rounded-1"
                       onClick={() => setSelectedStatus("Inactive")}
+                      style={{
+                        color:'#333',
+                        padding:'6px 10px',
+                        backgroundColor:selectedStatus === 'Active' ? '#fofofo' :'transparent'
+                      }}
                     >
                       Inactive
-                    </a>
+                    </button>
                   </li>
                   <li>
-                    <a
-                      href="#"
+                    <button
                       className="dropdown-item rounded-1"
                       onClick={() => setSelectedStatus("")}
+                      style={{
+                        color:'#333',
+                        padding:'6px 10px',
+                        backgroundColor:selectedStatus === 'Active' ? '#fofofo' :'transparent'
+                      }}
                     >
                       Clear Filter
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </div>

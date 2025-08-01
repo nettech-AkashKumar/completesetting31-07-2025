@@ -82,6 +82,7 @@ import Preferance from "../components/componentsetting28-07-2025/prefrance/Prefe
 import Appearance from "../components/componentsetting28-07-2025/appearance/Appearance.jsx";
 import SocialAuthentications from "../components/componentsetting28-07-2025/socialAuthentication/SocialAuthentication.jsx";
 import Language from "../components/componentsetting28-07-2025/language/Language.jsx";
+import OtpVerification from "../components/auth/OtpVerification.jsx";
 
 const AppRoutes = () => {
   return (
@@ -90,6 +91,7 @@ const AppRoutes = () => {
       {/* Auth & 404 remain outside layout */}
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/otp" element={<OtpVerification/>} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />

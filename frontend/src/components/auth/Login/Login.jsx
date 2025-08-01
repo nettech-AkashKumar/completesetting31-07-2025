@@ -108,9 +108,8 @@ const Login = () => {
 
       // for two factor
       if (res.data.twoFactor === true) {
-        alert("Otp sent to you email")
-        setOtpStep(true)
-        setEmailForOtp(formData.email);
+        toast.info("Otp sent to you email")
+        navigate("/otp", {state: {email: formData.email}})
         return;
       }
       // const userId = res.data?.user?._id || res.data?.user?.id;
@@ -219,7 +218,7 @@ const Login = () => {
             </form>
           </div>
           {/* for two factor authentication */}
-          {
+          {/* {
           otpStep && (
             <form onSubmit={handleVerifyOtp} style={{ marginTop: "20px" }}>
               <label htmlFor="">OTP sent to your email</label>
@@ -234,7 +233,7 @@ const Login = () => {
               <button type='submit'>Verify OTP</button>
             </form>
           )
-        }
+        } */}
         </div>
       </div>
     </div>
