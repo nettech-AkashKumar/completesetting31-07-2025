@@ -319,7 +319,7 @@ export const getMenuData = () => {
             { label: "Profile", path: `/profile/${id}` },
             { label: "Security", path: "/security-settings" },
             { label: "Notifications", path: "/notification" },
-            { label: "Connected Apps", path: "/connected-apps" },
+            { label: "Connected Apps", path: "/connectedapps" },
           ],
         },
         {
@@ -329,12 +329,12 @@ export const getMenuData = () => {
           subItems: [
             { label: "System Settings", path: "/system-settings" },
             { label: "Company Settings", path: "/company-settings" },
-            { label: "Localization", path: "/localization-settings" },
+            { label: "Localization", path: "/language-settings" },
             { label: "Prefixes", path: "/prefixes" },
-            { label: "Preference", path: "/preference" },
+            { label: "Preference", path: "/preferance" },
             { label: "Appearance", path: "/appearance" },
-            { label: "Social Authentication", path: "/social-authentication" },
-            { label: "Language", path: "/language-settings" },
+            { label: "Social Authentication", path: "/socialauth" },
+            { label: "Language", path: "/language" },
           ],
         },
         {

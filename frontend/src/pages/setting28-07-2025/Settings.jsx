@@ -97,7 +97,7 @@ const Settings = () => {
               >
                 <span style={{ color: "#212B36" }}>
                   {" "}
-                  <CiSettings /> {t("general_settings")}
+                  <CiSettings /> {t("General Settings")}
                 </span>
                 <span>
                   <RiArrowDropDownLine
@@ -107,7 +107,7 @@ const Settings = () => {
                       width: "17px",
                       height: "17px",
                       transition: "transform 0.3s",
-                      transform: openDropdown === "general" ? "rotate(180deg)" : "rotate(0deg)"
+                      transform: openDropdown === "general" ? "rotate(360deg)" : "rotate(270deg)"
                     }}
                   />
                 </span>
@@ -139,7 +139,7 @@ const Settings = () => {
                       {t("profile")} <RxDotFilled />
                     </span>
                   </Link>
-                  <Link to="security" style={{ textDecoration: "none", color: "black" }}>
+                  <Link to="/security-settings" style={{ textDecoration: "none", color: "black" }}>
                     <span
                       className="genersettingdropdown"
                       style={{
@@ -152,7 +152,7 @@ const Settings = () => {
                         alignItems: "center",
                       }}
                     >
-                      {t("security")} <RxDotFilled />
+                      {t("Security")} <RxDotFilled />
                     </span>
                   </Link>
                   <Link to="notification" style={{ textDecoration: "none", color: "black" }}>
@@ -168,10 +168,10 @@ const Settings = () => {
                         alignItems: "center",
                       }}
                     >
-                      {t("notification")} <RxDotFilled />
+                      {t("Notification")} <RxDotFilled />
                     </span>
                   </Link>
-                  <Link to="connectedApps" style={{ textDecoration: "none", color: "black" }}>
+                  <Link to="connectedapps" style={{ textDecoration: "none", color: "black" }}>
                     <span
                       className="genersettingdropdown"
                       style={{
@@ -184,7 +184,7 @@ const Settings = () => {
                         alignItems: "center",
                       }}
                     >
-                      {t("connected_apps")} <RxDotFilled />
+                      {t("Connected Apps")} <RxDotFilled />
                     </span>
                   </Link>
                 </div>
@@ -200,7 +200,7 @@ const Settings = () => {
               >
                 <span style={{ color: "#212B36", fontSize: "17px" }}>
                   {" "}
-                  <AiOutlineGlobal /> {t("website_settings")}
+                  <AiOutlineGlobal /> {t("Website Settings")}
                 </span>
                 <span>
                   <RiArrowDropDownLine
@@ -210,7 +210,7 @@ const Settings = () => {
                       width: "20px",
                       height: "20px",
                       transition: "transform 0.3s",
-                      transform: openDropdown === "website" ? "rotate(180deg)" : "rotate(0deg)"
+                      transform: openDropdown === "website" ? "rotate(360deg)" : "rotate(270deg)"
                     }}
                   />
                 </span>
@@ -224,7 +224,7 @@ const Settings = () => {
                     flexDirection: "column",
                   }}
                 >
-                  <Link to="system_settings" style={{ textDecoration: "none", color: "black" }}>
+                  <Link to="system-settings" style={{ textDecoration: "none", color: "black" }}>
                     {" "}
                     <span
                       className="genersettingdropdown"
@@ -239,10 +239,10 @@ const Settings = () => {
                       }}
                     >
                       {" "}
-                      {t("system_settings")} <RxDotFilled />
+                      {t("system settings")} <RxDotFilled />
                     </span>
                   </Link>
-                  <Link to="company_settings" style={{ textDecoration: "none", color: "black" }}>
+                  <Link to="company-settings" style={{ textDecoration: "none", color: "black" }}>
                     <span
                       className="genersettingdropdown"
                       style={{
@@ -255,10 +255,10 @@ const Settings = () => {
                         alignItems: "center",
                       }}
                     >
-                      {t("company_settings")}<RxDotFilled />
+                      {t("Company Settings")}<RxDotFilled />
                     </span>
                   </Link>
-                  <Link to="localization" style={{ textDecoration: "none", color: "black" }}>
+                  <Link to="/language-settings" style={{ textDecoration: "none", color: "black" }}>
                     <span
                       className="genersettingdropdown"
                       style={{
@@ -361,11 +361,13 @@ const Settings = () => {
                   display: "flex",
                   justifyContent: "space-between",
                   paddingBottom: "30px",
+                  cursor: "pointer"
                 }}
+                onClick={() => toggleDropdown("appsetting")}
               >
                 <span style={{ color: "#212B36", fontSize: "17px" }}>
                   {" "}
-                  <CiMobile2 /> {t("app_settings")}
+                  <CiMobile2 /> {t("App Settings")}
                 </span>
                 <span>
                   <RiArrowDropDownLine
@@ -374,76 +376,132 @@ const Settings = () => {
                       borderRadius: "50%",
                       width: "20px",
                       height: "20px",
+                      transition: "transfrom 0.3s",
+                      transform: openDropdown === "appsetting" ? "rotate(360deg)" : "rotate(270deg)"
                     }}
                   />
                 </span>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  paddingBottom: "30px",
-                }}
-              >
-                <span style={{ color: "#212B36", fontSize: "17px" }}>
-                  {" "}
-                  <AiOutlineDesktop /> {t("system_settings_secondary")}
-                </span>
-                <span>
-                  <RiArrowDropDownLine
-                    style={{
-                      backgroundColor: "#F2F2F2",
-                      borderRadius: "50%",
-                      width: "20px",
-                      height: "20px",
-                    }}
-                  />
-                </span>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  paddingBottom: "30px",
-                }}
-              >
-                <span style={{ color: "#212B36", fontSize: "17px" }}>
-                  {" "}
-                  <TbSettingsCog /> {t("financial_settings")}
-                </span>
-                <span>
-                  <RiArrowDropDownLine
-                    style={{
-                      backgroundColor: "#F2F2F2",
-                      borderRadius: "50%",
-                      width: "20px",
-                      height: "20px",
-                    }}
-                  />
-                </span>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  paddingBottom: "20px",
-                }}
-              >
-                <span style={{ color: "#212B36", fontSize: "17px" }}>
-                  {" "}
-                  <TbSettings2 />{t("other_settings")}
-                </span>
-                <span>
-                  <RiArrowDropDownLine
-                    style={{
-                      backgroundColor: "#F2F2F2",
-                      borderRadius: "50%",
-                      width: "20px",
-                      height: "20px",
-                    }}
-                  />
-                </span>
-              </div>
+              {openDropdown === "appsetting" && (
+                <div
+                  style={{ paddingBottom: "20px", display: "flex", flexDirection: "column", }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+
+                    <span style={{ color: "#212B36", fontSize: "17px" }}>
+                      {" "}
+                      <CiMobile2 /> {t("Invoice")}
+                    </span>
+                    <span>
+                      <RiArrowDropDownLine
+                        style={{
+                          backgroundColor: "#F2F2F2",
+                          borderRadius: "50%",
+                          width: "20px",
+                          height: "20px",
+                          transition: "transfrom 0.3s",
+                          transform: openDropdown === "appsetting" ? "rotate(360deg)" : "rotate(270deg)"
+                        }}
+                      />
+                    </span>
+                  </div>
+                  {openDropdown === "appsetting" && (
+                    <>
+                      <Link to="" style={{ textDecoration: "none", color: "black" }}>
+                        {" "}
+                        <span
+                          className="genersettingdropdown"
+                          style={{
+                            marginLeft: "10px",
+                            marginRight: "10px",
+                            padding: "10px",
+                            borderRadius: "5px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
+                          {" "}
+                          {t("Invoice Settings")} <RxDotFilled />
+                        </span>
+                      </Link>
+                      <Link to="" style={{ textDecoration: "none", color: "black" }}>
+                        {" "}
+                        <span
+                          className="genersettingdropdown"
+                          style={{
+                            marginLeft: "10px",
+                            marginRight: "10px",
+                            padding: "10px",
+                            borderRadius: "5px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
+                          {" "}
+                          {t("Invoice Templates")} <RxDotFilled />
+                        </span>
+                      </Link>
+                    </>
+                  )}
+                  <Link to="" style={{ textDecoration: "none", color: "black" }}>
+                    {" "}
+                    <span
+                      className="genersettingdropdown"
+                      style={{
+                        marginLeft: "10px",
+                        marginRight: "10px",
+                        padding: "10px",
+                        borderRadius: "5px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      {" "}
+                      {t("Printer")} <RxDotFilled />
+                    </span>
+                  </Link>
+                  <Link to="" style={{ textDecoration: "none", color: "black" }}>
+                    {" "}
+                    <span
+                      className="genersettingdropdown"
+                      style={{
+                        marginLeft: "10px",
+                        marginRight: "10px",
+                        padding: "10px",
+                        borderRadius: "5px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      {" "}
+                      {t("POS")} <RxDotFilled />
+                    </span>
+                  </Link>
+                  <Link to="" style={{ textDecoration: "none", color: "black" }}>
+                    {" "}
+                    <span
+                      className="genersettingdropdown"
+                      style={{
+                        marginLeft: "10px",
+                        marginRight: "10px",
+                        padding: "10px",
+                        borderRadius: "5px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      {" "}
+                      {t("Custom Fields")} <RxDotFilled />
+                    </span>
+                  </Link>
+                </div>
+              )}
+
             </div>
           </div>
 

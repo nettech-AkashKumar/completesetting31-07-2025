@@ -116,7 +116,7 @@ const AppRoutes = () => {
           <Route path="security-settings" element={<Security />} />
           <Route path="notification" element={<Notification />} />
           <Route path="connectedapps" element={<ConnectedApps />} />
-          <Route path="system_settings" element={<SystemSettings />} />
+          <Route path="system-settings" element={<SystemSettings />} />
           <Route path="company-settings" element={<Companysettings />} />
           <Route path="language-settings" element={<Localization />} />
           <Route path="prefixes" element={<Prefixes />} />
