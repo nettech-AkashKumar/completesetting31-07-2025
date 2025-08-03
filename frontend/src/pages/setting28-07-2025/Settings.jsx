@@ -19,7 +19,7 @@ const Settings = () => {
   const [showWebsiteSettings, setShowWebsitelSettings] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const { user } = useAuth();
-  const id = user?.id;
+  const id = user?._id;
 
 
   const toggleDropdown = (name) => {

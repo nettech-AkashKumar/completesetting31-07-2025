@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../config/config";
+import { useParams } from "react-router-dom";
 
 const modules = ["Brand", "Category", "Product"];
 
@@ -16,16 +17,24 @@ const permissionFields = [
 
 
 const Permission = () => {
+  const { roleId } = useParams();  //get role ID from URL
   const [selectedRole, setSelectedRole] = useState(null); // Store full role object
   const [roles, setRoles] = useState([]);
   const [rolePermissions, setRolePermissions] = useState({});
   const [loading, setLoading] = useState(false);
 
-
+  console.log('ideesfsfs', roleId)
   useEffect(() => {
     fetchRoles();
   }, []);
 
+  // auto select the role if id exists
+  useEffect(() => {
+    if (roleId && roles.length > 0) {
+      const found = roles.find((role) => role._id === roleId);
+      if (found) setSelectedRole(found);
+    }
+  }, [roleId, roles]);
 
   useEffect(() => {
     if (selectedRole?._id) {
@@ -46,18 +55,18 @@ const Permission = () => {
   };
 
 
-const fetchRolePermissions = async (roleId) => {
-  try {
-    setLoading(true);
-    const res = await axios.get(`${BASE_URL}/api/role/roleById/${roleId}`);
-    setRolePermissions(res.data?.modulePermissions || {});
-  } catch (err) {
-    console.error("Error fetching role permissions", err);
-    alert("Failed to load permissions.");
-  } finally {
-    setLoading(false);
-  }
-};
+  const fetchRolePermissions = async (roleId) => {
+    try {
+      setLoading(true);
+      const res = await axios.get(`${BASE_URL}/api/role/roleById/${roleId}`);
+      setRolePermissions(res.data?.modulePermissions || {});
+    } catch (err) {
+      console.error("Error fetching role permissions", err);
+      alert("Failed to load permissions.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   const handlePermissionChange = (module, field) => {

@@ -91,7 +91,7 @@ const AppRoutes = () => {
       {/* Auth & 404 remain outside layout */}
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/otp" element={<OtpVerification/>} />
+      <Route path="/otp" element={<OtpVerification />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
@@ -111,14 +111,14 @@ const AppRoutes = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         {/* <Route path="/general-settings" element={<Setting />} /> */}
         {/* <Route path="/general-settings" element={<Settings />} /> */}
-        <Route path="/general-settings" element={<Settings />}>
+        <Route path="/" element={<Settings />}>
           <Route path="profile/:id" element={<UserProfiles />} />
-          <Route path="security" element={<Security />} />
+          <Route path="security-settings" element={<Security />} />
           <Route path="notification" element={<Notification />} />
           <Route path="connectedapps" element={<ConnectedApps />} />
           <Route path="system_settings" element={<SystemSettings />} />
-          <Route path="company_settings" element={<Companysettings />} />
-          <Route path="localization" element={<Localization />} />
+          <Route path="company-settings" element={<Companysettings />} />
+          <Route path="language-settings" element={<Localization />} />
           <Route path="prefixes" element={<Prefixes />} />
           <Route path="preferance" element={<Preferance />} />
           <Route path="appearance" element={<Appearance />} />
