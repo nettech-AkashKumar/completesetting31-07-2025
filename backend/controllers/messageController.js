@@ -1,4 +1,5 @@
 const Message = require('../models/Message');
+const { createNotification } = require('./notificationController');
 
 exports.saveMessage = async (req, res) => {
   try {
@@ -37,6 +38,25 @@ exports.saveMessage = async (req, res) => {
     };
 
     await conversation.save();
+
+    // Create notification for the recipient
+    try {
+      const notificationTitle = `New message from ${from}`;
+      const notificationMessage = message.length > 50 ? message.substring(0, 50) + '...' : message;
+      
+      await createNotification(
+        to, // recipient
+        from, // sender
+        'message',
+        notificationTitle,
+        notificationMessage,
+        conversation._id,
+        newMessage._id
+      );
+    } catch (notificationError) {
+      console.error('Error creating notification:', notificationError);
+      // Don't fail the message save if notification fails
+    }
 
     res.status(201).json(newMessage);
   } catch (err) {
@@ -94,17 +114,22 @@ exports.markAsRead = async (req, res) => {
 // New function to get all conversations for a user
 exports.getConversations = async (req, res) => {
   try {
-    const { userId } = req.params;
-    
+    const userId = req.params.userId;
+    console.log("🔍 Fetching conversations for user:", userId);
+
     const conversations = await Message.find({
-      participants: userId
-    }).populate('participants', 'username email profilePicture')
-      .populate('lastMessage.from', 'username')
-      .sort({ 'lastMessage.timestamp': -1 });
-    
-    res.json(conversations);
+      participants: userId,
+    })
+      .populate("participants", "_id firstName lastName email profileImage") // populate selected fields
+      .populate("messages.from", "_id firstName lastName email profileImage"); // populate message sender info
+
+    console.log("📊 Found conversations:", conversations.length);
+    console.log("📋 Conversations data:", JSON.stringify(conversations, null, 2));
+
+    res.status(200).json(conversations);
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    console.error("❌ Error fetching conversations:", err.message);
+    res.status(500).json({ message: "Failed to fetch conversations" });
   }
 };
 
@@ -179,9 +204,10 @@ exports.deleteUserMessages = async (req, res) => {
 exports.deleteSelectedMessages = async (req, res) => {
   try {
     const { messages: selectedMessages, from, to } = req.body;
-    const currentUserId = req.user.id; // Get the authenticated user's ID
+    const currentUserId = from; // Use the from parameter instead of req.user.id
     
     console.log('Received selected messages to delete:', selectedMessages);
+    console.log('Current user ID:', currentUserId);
     
     // Sort participants to ensure consistent ordering
     const participants = [from, to].sort();
@@ -250,19 +276,24 @@ exports.deleteSelectedMessages = async (req, res) => {
   }
 }; 
 
-exports.getConversations = async (req, res) => {
+// Test function to check all conversations in database
+exports.getAllConversations = async (req, res) => {
   try {
-    const userId = req.params.userId;
-
-    const conversations = await Message.find({
-      participants: userId,
-    })
-      .populate("participants", "_id name email profileImage") // populate selected fields
-      .populate("messages"); // optional: or limit recent messages
-
-    res.status(200).json(conversations);
+    console.log("🔍 Testing: Fetching ALL conversations from database");
+    
+    const allConversations = await Message.find({})
+      .populate("participants", "_id firstName lastName email profileImage")
+      .populate("messages.from", "_id firstName lastName email profileImage");
+    
+    console.log("📊 Total conversations in database:", allConversations.length);
+    console.log("📋 All conversations:", JSON.stringify(allConversations, null, 2));
+    
+    res.status(200).json({
+      total: allConversations.length,
+      conversations: allConversations
+    });
   } catch (err) {
-    console.error("❌ Error fetching conversations:", err.message);
-    res.status(500).json({ message: "Failed to fetch conversations" });
+    console.error("❌ Error fetching all conversations:", err.message);
+    res.status(500).json({ message: "Failed to fetch all conversations" });
   }
-};
+}; 
