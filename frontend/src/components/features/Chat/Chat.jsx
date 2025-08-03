@@ -21,6 +21,11 @@ import { LuRefreshCcw, LuChevronUp, LuMic, LuSend } from "react-icons/lu";
 
 const SOCKET_URL = import.meta.env.BACKEND_URL || 'http://localhost:5000'; // Use your backend port
 // const socket = io("http://localhost:5000"); // same as backend port
+
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const userId = userData._id;
+  const firstName = userData.firstName;
+  
 const Chat = () => {
   const [users, setUsers] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -1759,12 +1764,12 @@ const Chat = () => {
         ) : (
           <div style={{padding:60, textAlign:'center'}}>
 
-             <h2 style={{ margin: 0, color: '#495057' }}>Welcome, {users?.username || 'User'} !</h2>
+             <h2 style={{ margin: 0, color: '#495057' }}>Welcome, {firstName || 'User'} !</h2>
              
              Select a user to start chatting
             
             <br/><br/>
-
+{/* 
             <button 
             onClick={handleLogout}
             style={{
@@ -1781,7 +1786,7 @@ const Chat = () => {
             onMouseOut={(e) => e.target.style.backgroundColor = '#dc3545'}
             >
               Logout
-            </button>
+            </button> */}
 
           </div>
         )}
