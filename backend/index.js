@@ -19,8 +19,9 @@ const moduleRoutes = require("./routes/moduleRoutes");
 const couponRoutes = require('./routes/CouponsRoute');
 const GiftcardRoutes = require("./routes/GiftCardRoutes");
 const AddCustomerRoutes = require("./routes/AddCustomersRoutes");
-const conversations = require('./routes/message')
+const conversations = require('./routes/conversations')
 const messages = require('./routes/message')
+const notificationRoutes = require('./routes/notificationRoutes')
 const purchaseRoutes = require('./routes/purchaseRoutes');
 const stockHistoryRoutes = require('./routes/stockHistoryRoutes');
 const purchaseSettingsRoutes = require('./routes/purchaseSettingRoutes');
@@ -50,6 +51,7 @@ const localizationrouter = require("./routes/settings/Localizationroute.js");
 const http = require('http');
 const { Server } = require('socket.io');
 const emailrouter = require('./routes/emailroutes.js');
+const { setIO } = require('./utils/socket');
 
 // Load env variables
 dotenv.config();
@@ -99,6 +101,7 @@ app.use("/api/giftcard", GiftcardRoutes);
 app.use("/api/customers", AddCustomerRoutes);
 app.use("/api/conversations", conversations);
 app.use("/api/messages", messages);
+app.use("/api/notifications", notificationRoutes);
 
 app.use("/api/purchases", purchaseRoutes);
 app.use("/api/stock-history", stockHistoryRoutes);
@@ -154,6 +157,12 @@ const io = new Server(server, {
   }
 });
 
+// Set io instance in socket utility
+setIO(io);
+
+// Export io instance for use in other files
+module.exports.io = io;
+
 // Online users map (you can replace this with DB or Redis later)
 const onlineUsers = new Map();
 
@@ -161,7 +170,16 @@ io.on("connection", (socket) => {
   console.log("🟢 Socket connected:", socket.id);
 
   socket.on("add-user", (userId) => {
+    console.log("👤 User added to online list:", userId);
     onlineUsers.set(userId, socket.id);
+    
+    // Send current online users to the new user
+    const onlineUserIds = Array.from(onlineUsers.keys());
+    socket.emit("online-users", onlineUserIds);
+    
+    // Broadcast updated online users list to all clients
+    console.log("📊 Broadcasting online users:", onlineUserIds);
+    io.emit("online-users", onlineUserIds);
   });
 
   socket.on("send-msg", (data) => {
@@ -171,11 +189,35 @@ io.on("connection", (socket) => {
     }
   });
 
+  // Handle notification events
+  socket.on("new-notification", (data) => {
+    console.log("📢 Backend: Received new-notification event:", data);
+    const recipientSocket = onlineUsers.get(data.recipient);
+    if (recipientSocket) {
+      console.log("📢 Backend: Sending notification to socket:", recipientSocket);
+      socket.to(recipientSocket).emit("notification-received", data);
+    } else {
+      console.log("📢 Backend: Recipient not online:", data.recipient);
+    }
+  });
+
   socket.on("disconnect", () => {
     console.log("🔴 Socket disconnected:", socket.id);
+    let disconnectedUserId = null;
     [...onlineUsers.entries()].forEach(([uid, sid]) => {
-      if (sid === socket.id) onlineUsers.delete(uid);
+      if (sid === socket.id) {
+        onlineUsers.delete(uid);
+        disconnectedUserId = uid;
+      }
     });
+    
+    if (disconnectedUserId) {
+      console.log("👤 User removed from online list:", disconnectedUserId);
+      // Broadcast updated online users list to all clients
+      const onlineUserIds = Array.from(onlineUsers.keys());
+      console.log("📊 Broadcasting online users after disconnect:", onlineUserIds);
+      io.emit("online-users", onlineUserIds);
+    }
   });
 });
 

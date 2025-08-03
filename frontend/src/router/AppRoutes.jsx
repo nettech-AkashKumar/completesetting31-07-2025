@@ -83,6 +83,8 @@ import Appearance from "../components/componentsetting28-07-2025/appearance/Appe
 import SocialAuthentications from "../components/componentsetting28-07-2025/socialAuthentication/SocialAuthentication.jsx";
 import Language from "../components/componentsetting28-07-2025/language/Language.jsx";
 import OtpVerification from "../components/auth/OtpVerification.jsx";
+import Activities from "../components/layouts/Navbar/activities.jsx";
+import ViewAllNotifications from "../components/layouts/Navbar/ViewAllNotifications.jsx";
 
 const AppRoutes = () => {
   return (
@@ -145,6 +147,8 @@ const AppRoutes = () => {
         <Route path="/coupons" element={<Coupons />} />
         <Route path="/gift-cards" element={<GiftCard />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="/activities" element={<Activities />} />
+        <Route path="/ViewAllNotifications" element={<ViewAllNotifications />} />
         <Route path="/variant-attributes" element={<Variant />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/theme" element={<ThemeCustomizer />} />

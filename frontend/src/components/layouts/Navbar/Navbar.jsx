@@ -16,6 +16,8 @@ import { LanguageContext } from '../../../Context/Language/LanguageContext';
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import Activities from './activities.jsx';
+import { io } from 'socket.io-client';
 
 
 function Navbar() {
@@ -24,6 +26,137 @@ function Navbar() {
   const fullscreenBtnRef = useRef(null);
   const toggleBtnRef = useRef(null);
   const { mobileOpen, handleMobileToggle } = useSidebar();
+  
+  // Notification badge state
+  const [unreadCount, setUnreadCount] = useState(0);
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const backendurl = import.meta.env.BACKEND_URL || 'http://localhost:5000';
+  
+  // Socket ref to prevent multiple connections
+  const socketRef = useRef(null);
+  const userIdRef = useRef(null);
+
+  // Fetch unread notification count
+  const fetchUnreadCount = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const userId = userData?._id || userData?.id;
+      
+      if (!userId) {
+        console.log('🔔 Navbar: No user ID available');
+        return;
+      }
+      
+      console.log('🔔 Navbar: Fetching unread count for user:', userId);
+      
+      const response = await fetch(`${backendurl}/api/notifications/unread/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('🔔 Navbar: Unread count response:', data);
+        setUnreadCount(data.count);
+      } else {
+        console.log('🔔 Navbar: Failed to fetch unread count:', response.status);
+      }
+    } catch (error) {
+      console.error('🔔 Navbar: Error fetching unread count:', error);
+    }
+  };
+
+  // Socket event handling for real-time notification updates
+  useEffect(() => {
+    if (!userData) return;
+
+    const currentUserId = userData._id || userData.id;
+    
+    // Only create new socket connection if user ID has changed or no socket exists
+    if (!socketRef.current || userIdRef.current !== currentUserId) {
+      // Disconnect existing socket if user ID changed
+      if (socketRef.current) {
+        console.log('🔔 Navbar: Disconnecting existing socket for user change');
+        socketRef.current.disconnect();
+      }
+      
+      console.log('🔔 Navbar: Creating new socket connection for user:', currentUserId);
+      
+      // Connect to socket for real-time notifications
+      socketRef.current = io(backendurl);
+      userIdRef.current = currentUserId;
+      
+      console.log('🔔 Navbar: Socket connected for notifications');
+      console.log('🔔 Navbar: Current user ID:', currentUserId);
+      
+      // Add user to online users list
+      socketRef.current.emit('add-user', currentUserId);
+      
+      socketRef.current.on('notification-received', (data) => {
+        console.log('🔔 Navbar: Received notification event:', data);
+        console.log('🔔 Navbar: Event recipient:', data.recipient);
+        console.log('🔔 Navbar: Current user ID:', currentUserId);
+        
+        if (data.recipient === currentUserId) {
+          console.log('🔔 Navbar: Updating badge count from', unreadCount, 'to', unreadCount + 1);
+          setUnreadCount(prev => prev + 1);
+        } else {
+          console.log('🔔 Navbar: Notification not for current user');
+        }
+      });
+
+      // Listen for new-notification events (alternative event name)
+      socketRef.current.on('new-notification', (data) => {
+        console.log('🔔 Navbar: Received new-notification event:', data);
+        if (data.recipient === currentUserId) {
+          console.log('🔔 Navbar: Updating badge count from', unreadCount, 'to', unreadCount + 1);
+          setUnreadCount(prev => prev + 1);
+        }
+      });
+    }
+
+    // Fetch initial unread count
+    fetchUnreadCount();
+
+    // Cleanup function
+    return () => {
+      if (socketRef.current) {
+        console.log('🔔 Navbar: Disconnecting socket');
+        socketRef.current.disconnect();
+        socketRef.current = null;
+        userIdRef.current = null;
+      }
+    };
+  }, [userData, backendurl]); // Removed unreadCount from dependencies
+
+  // Handle notification dropdown click
+  const handleNotificationClick = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const userId = userData?._id || userData?.id;
+      
+      if (!userId || unreadCount === 0) return;
+      
+      // Mark all notifications as read
+      await fetch(`${backendurl}/api/notifications/read-all/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      // Reset unread count
+      setUnreadCount(0);
+    } catch (error) {
+      console.error('Error marking notifications as read:', error);
+    }
+  };
+
+  // Callback function to reset navbar badge when notifications are marked as read
+  const handleNotificationsRead = () => {
+    setUnreadCount(0);
+  };
+
 
   useEffect(() => {
     const handleFullscreen = () => {
@@ -136,7 +269,6 @@ function Navbar() {
     }
   }, [companyImages])
 
-  const userData = JSON.parse(localStorage.getItem("user"));
   const userId = userData._id;
 
   return (
@@ -270,82 +402,38 @@ function Navbar() {
                 </Link>
               </li>
               <li className="nav-item dropdown nav-item-box">
-                <a href="#" className="dropdown-toggle nav-link" data-bs-toggle="dropdown" onClick={(e) => e.preventDefault()}>
+                <a href="#" className="dropdown-toggle nav-link" data-bs-toggle="dropdown" onClick={(e) => {
+                  e.preventDefault();
+                  // Removed automatic marking as read - let user control this manually
+                }}>
                   <TbBell />
+                  {unreadCount > 0 && (
+                    <span 
+                      className="badge rounded-pill" 
+                      style={{
+                        position: 'absolute',
+                        top: '-5px',
+                        right: '-5px',
+                        backgroundColor: '#ff4757',
+                        color: 'white',
+                        fontSize: '10px',
+                        minWidth: '18px',
+                        height: '18px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '50%',
+                        border: '2px solid white'
+                      }}
+                    >
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
+                  )}
                 </a>
                 <div className="dropdown-menu notifications">
-                  <div className="topnav-dropdown-header">
-                    <h5 className="notification-title">{t("notifications")}</h5>
-                    <a href="#" className="clear-noti" onClick={(e) => e.preventDefault()}>{t("markAllAsRead")}</a>
-                  </div>
-                  <div className="noti-content">
-                    <ul className="notification-list">
-                      <li className="notification-message">
-                        <Link to="/activities">
-                          <div className="media d-flex">
-                            <span className="avatar flex-shrink-0">
-                              <img alt="Img" src="assets/img/profiles/avatar-13.jpg" />
-                            </span>
-                            <div className="flex-grow-1">
-                              <p className="noti-details">
-                                <span className="noti-title">James Kirwin</span> confirmed his order. Order No: #78901. Estimated delivery: 2 days
-                              </p>
-                              <p className="noti-time">4 mins ago</p>
-                            </div>
-                          </div>
-                        </Link>
-                      </li>
-                      <li className="notification-message">
-                        <Link to="/activities">
-                          <div className="media d-flex">
-                            <span className="avatar flex-shrink-0">
-                              <img alt="Img" src="assets/img/profiles/avatar-03.jpg" />
-                            </span>
-                            <div className="flex-grow-1">
-                              <p className="noti-details">
-                                <span className="noti-title">Leo Kelly</span> cancelled his order scheduled for 17 Jan 2025
-                              </p>
-                              <p className="noti-time">10 mins ago</p>
-                            </div>
-                          </div>
-                        </Link>
-                      </li>
-                      <li className="notification-message">
-                        <Link to="/activities" className="recent-msg">
-                          <div className="media d-flex">
-                            <span className="avatar flex-shrink-0">
-                              <img alt="Img" src="assets/img/profiles/avatar-17.jpg" />
-                            </span>
-                            <div className="flex-grow-1">
-                              <p className="noti-details">
-                                Payment of $50 received for Order #67890 from <span className="noti-title">Antonio Engle</span>
-                              </p>
-                              <p className="noti-time">05 mins ago</p>
-                            </div>
-                          </div>
-                        </Link>
-                      </li>
-                      <li className="notification-message">
-                        <Link to="/activities" className="recent-msg">
-                          <div className="media d-flex">
-                            <span className="avatar flex-shrink-0">
-                              <img alt="Img" src="assets/img/profiles/avatar-02.jpg" />
-                            </span>
-                            <div className="flex-grow-1">
-                              <p className="noti-details">
-                                <span className="noti-title">Andrea</span> confirmed his order. Order No: #73401. Estimated delivery: 3 days
-                              </p>
-                              <p className="noti-time">4 mins ago</p>
-                            </div>
-                          </div>
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="topnav-dropdown-footer d-flex align-items-center gap-3">
-                    <button className="btn btn-secondary btn-md w-100" type="button">{t("cancel")}</button>
-                    <Link to="/activities" className="btn btn-primary btn-md w-100">{t("viewAll")}</Link>
-                  </div>
+                  
+                  <Activities onNotificationsRead={handleNotificationsRead} />
+                  
                 </div>
               </li>
               {/* Settings */}
