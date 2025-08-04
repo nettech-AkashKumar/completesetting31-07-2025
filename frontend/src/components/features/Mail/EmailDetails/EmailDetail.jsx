@@ -487,15 +487,18 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
         <span
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
           style={{
+            display:'flex',
+            alignItems:'center',
+            justifyContent:'center',
             border: "1px solid black",
             borderRadius: "50%",
             padding: "10px 10px",
-            width: "20px",
-            height: "20px",
+            width: "30px",
+            height: "30px",
             fontWeight: 500,
           }}
         >
-          <GrEmoji style={{ marginRight: "10px", color: "#808080" }} />
+          <GrEmoji style={{ color: "#3b3b3bff" }} />
         </span>
         {console.log("Email body being sent:", email.body)}
       </div>

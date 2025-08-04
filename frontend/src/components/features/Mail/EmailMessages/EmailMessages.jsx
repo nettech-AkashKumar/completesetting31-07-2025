@@ -15,12 +15,19 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { FaReply } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import BASE_URL from "../../../../pages/config/config";
+import { useLocation } from "react-router-dom";
 
 const EmailMessages = ({
   filteredEmails,
   handleToggleStar: externalToggleStar,
   isDeletedPage,
+ 
 }) => {
+
+  // to dynamic render name
+  const location  = useLocation();
+  const mailboxName = location.pathname.split("/").pop();
+  const displayMailboxName = mailboxName.charAt(0).toUpperCase() + mailboxName.slice(1)
   const [search, setSearch] = useState("");
   const [emails, setEmails] = useState([]);
 
@@ -193,7 +200,7 @@ const EmailMessages = ({
         {/* inbox */}
         <div className="inbox">
           <span style={{ color: "black", fontSize: "18px", fontWeight: 600 }}>
-            Inbox
+            {displayMailboxName}
           </span>
           <span className="twothreemail">
             {(filteredEmails || emails).length}Emails{" "}
@@ -204,9 +211,9 @@ const EmailMessages = ({
                 fontWeight: "bold",
               }}
             >
-              <BsDot style={{ color: "#fba64b", marginTop: "10px" }} />
+              {/* <BsDot style={{ color: "#fba64b", marginTop: "10px" }} /> */}
             </span>{" "}
-            56 Unread
+            {/* 56 Unread */}
             <span>
               {selectedEmails.length > 0 && (
                 <div className="selectdt">

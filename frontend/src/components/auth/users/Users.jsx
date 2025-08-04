@@ -13,12 +13,20 @@ const Users = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const [searchTerm, setSearchTerm] = useState("  ")
   const [selectedStatus, setSelectedStatus] = useState("")  //for active , inactive
-  const fileInputRef = useRef(null);
-  const handleIconClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+  const addFileInputRef = useRef(null);
+  const editFileInputRef = useRef(null);
+  const addHandleIconClick = () => {
+    if (addFileInputRef.current) {
+      addFileInputRef.current.click();
     } else {
-      console.warn('fileInputRef is null');
+      console.warn('addFileInputRef is null');
+    }
+  };
+   const editHandleIconClick = () => {
+    if (editFileInputRef.current) {
+      editFileInputRef.current.click();
+    } else {
+      console.warn('editFileInputRef is null');
     }
   };
 
@@ -34,7 +42,7 @@ const Users = () => {
 
   const [selectedImages, setSelectedImages] = useState([]);
   console.log(users);
-  // console.log("Uploaded image:", profileImage?.[0]?.url);
+  console.log("Uploaded image:", profileImage?.[0]?.url);
 
   const [editUserId, setEditUserdId] = useState(null);
 
@@ -547,7 +555,7 @@ const matchesStatus = selectedStatus ? user.status === selectedStatus : true
                                   <input
                                     type="file"
                                     accept="image/*"
-                                    ref={fileInputRef}
+                                    ref={addFileInputRef}
                                     style={{ display: 'none' }}
                                     onChange={(e) =>
                                       setSelectedImages(
@@ -557,7 +565,7 @@ const matchesStatus = selectedStatus ? user.status === selectedStatus : true
                                   />
 
                                   <div className="image-uploads">
-                                    <h4 style={{cursor:'pointer'}} onClick={handleIconClick}>Upload Image</h4>
+                                    <h4 style={{cursor:'pointer'}} onClick={addHandleIconClick}>Upload Image</h4>
                                   </div>
                                 </div>
                                 <p className="fs-13 mt-2">
@@ -766,7 +774,7 @@ const matchesStatus = selectedStatus ? user.status === selectedStatus : true
                                   <input
                                     type="file"
                                     accept="image/*"
-                                    ref={fileInputRef}
+                                    ref={editFileInputRef}
                                     onChange={(e) =>
                                       setEditUserData({
                                         ...editUserData,
@@ -775,7 +783,7 @@ const matchesStatus = selectedStatus ? user.status === selectedStatus : true
                                     }
                                   />
                                   <div className="image-uploads">
-                                    <h4 style={{cursor:'pointer'}} onClick={handleIconClick}>Change Image</h4>
+                                    <h4 style={{cursor:'pointer'}} onClick={editHandleIconClick}>Change Image</h4>
                                   </div>
                                 </div>
                                 <p className="mt-2">JPEG, PNG up to 2 MB</p>

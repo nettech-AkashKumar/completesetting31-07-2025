@@ -318,8 +318,8 @@ export const getMenuData = () => {
           subItems: [
             { label: "Profile", path: `/profile/${id}` },
             { label: "Security", path: "/security-settings" },
-            { label: "Notifications", path: "/notification" },
-            { label: "Connected Apps", path: "/connectedapps" },
+            // { label: "Notifications", path: "/notification" },
+            // { label: "Connected Apps", path: "/connectedapps" },
           ],
         },
         {
@@ -327,36 +327,36 @@ export const getMenuData = () => {
           icon: <TbWorld className="icons" />,
           key: "websiteSettings",
           subItems: [
-            { label: "System Settings", path: "/system-settings" },
+            // { label: "System Settings", path: "/system-settings" },
             { label: "Company Settings", path: "/company-settings" },
             { label: "Localization", path: "/language-settings" },
-            { label: "Prefixes", path: "/prefixes" },
-            { label: "Preference", path: "/preferance" },
-            { label: "Appearance", path: "/appearance" },
-            { label: "Social Authentication", path: "/socialauth" },
-            { label: "Language", path: "/language" },
+            // { label: "Prefixes", path: "/prefixes" },
+            // { label: "Preference", path: "/preferance" },
+            // { label: "Appearance", path: "/appearance" },
+            // { label: "Social Authentication", path: "/socialauth" },
+            // { label: "Language", path: "/language" },
           ],
         },
-        {
-          title: "App Settings",
-          icon: <TbDeviceMobile className="icons" />,
-          key: "appSettings",
-          subItems: [
-            {
-              nestedKey: "Invoice",
-              label: "Invoice",
-              nested: [
-                { label: "Invoice Settings", path: "/invoice-settings" },
-                { label: "Invoice Template", path: "/invoice-template" },
-              ],
-            },
+        // {
+        //   title: "App Settings",
+        //   icon: <TbDeviceMobile className="icons" />,
+        //   key: "appSettings",
+        //   subItems: [
+        //     {
+        //       nestedKey: "Invoice",
+        //       label: "Invoice",
+        //       nested: [
+        //         { label: "Invoice Settings", path: "/invoice-settings" },
+        //         { label: "Invoice Template", path: "/invoice-template" },
+        //       ],
+        //     },
 
 
-            { label: "Printer", path: "/printer-settings" },
-            { label: "POS", path: "/pos-settings" },
-            { label: "Custom Fields", path: "/custom-fields" },
-          ],
-        },
+        //     { label: "Printer", path: "/printer-settings" },
+        //     { label: "POS", path: "/pos-settings" },
+        //     { label: "Custom Fields", path: "/custom-fields" },
+        //   ],
+        // },
         // {
         //   title: "System Settings",
         //   icon: <TbDeviceDesktop className="icons" />,

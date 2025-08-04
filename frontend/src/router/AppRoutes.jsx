@@ -184,7 +184,7 @@ const AppRoutes = () => {
           <Route path="sent" element={<Sent />} />
           <Route path="drafts" element={<Drafts />} />
           <Route path="important" element={<Importants />} />
-          {/* <Route path="allemails" element={<EmailMessages />} /> */}
+          <Route path="allemails" element={<EmailMessages />} />
           <Route path="spam" element={<Spam />} />
           <Route path="deleted" element={<Deleted />} />
         </Route>

@@ -160,7 +160,7 @@ const Settings = () => {
                       {t("Security")} <RxDotFilled />
                     </span>
                   </Link>
-                  <Link to="notification" style={{ textDecoration: "none", color: "black" }}>
+                  {/* <Link to="notification" style={{ textDecoration: "none", color: "black" }}>
                     <span
                       className="genersettingdropdown"
                       style={{
@@ -191,7 +191,7 @@ const Settings = () => {
                     >
                       {t("Connected Apps")} <RxDotFilled />
                     </span>
-                  </Link>
+                  </Link> */}
                 </div>
               )}
               <div
@@ -229,7 +229,7 @@ const Settings = () => {
                     flexDirection: "column",
                   }}
                 >
-                  <Link to="system-settings" style={{ textDecoration: "none", color: "black" }}>
+                  {/* <Link to="system-settings" style={{ textDecoration: "none", color: "black" }}>
                     {" "}
                     <span
                       className="genersettingdropdown"
@@ -246,7 +246,7 @@ const Settings = () => {
                       {" "}
                       {t("system settings")} <RxDotFilled />
                     </span>
-                  </Link>
+                  </Link> */}
                   <Link to="company-settings" style={{ textDecoration: "none", color: "black" }}>
                     <span
                       className="genersettingdropdown"
@@ -279,7 +279,7 @@ const Settings = () => {
                       {t("localization")} <RxDotFilled />
                     </span>
                   </Link>
-                  <Link to="prefixes" style={{ textDecoration: "none", color: "black" }}>
+                  {/* <Link to="prefixes" style={{ textDecoration: "none", color: "black" }}>
                     <span
                       className="genersettingdropdown"
                       style={{
@@ -294,8 +294,8 @@ const Settings = () => {
                     >
                       {t("prefixes")} <RxDotFilled />
                     </span>
-                  </Link>
-                  <Link to="preferance" style={{ textDecoration: "none", color: "black" }}>
+                  </Link> */}
+                  {/* <Link to="preferance" style={{ textDecoration: "none", color: "black" }}>
                     <span
                       className="genersettingdropdown"
                       style={{
@@ -310,8 +310,8 @@ const Settings = () => {
                     >
                       {t("preferance")} <RxDotFilled />
                     </span>
-                  </Link>
-                  <Link to="appearance" style={{ textDecoration: "none", color: "black" }}>
+                  </Link> */}
+                  {/* <Link to="appearance" style={{ textDecoration: "none", color: "black" }}>
                     <span
                       className="genersettingdropdown"
                       style={{
@@ -326,8 +326,8 @@ const Settings = () => {
                     >
                       {t("appearance")} <RxDotFilled />
                     </span>
-                  </Link>
-                  <Link to="socialauth" style={{ textDecoration: "none", color: "black" }}>
+                  </Link> */}
+                  {/* <Link to="socialauth" style={{ textDecoration: "none", color: "black" }}>
                     <span
                       className="genersettingdropdown"
                       style={{
@@ -342,8 +342,8 @@ const Settings = () => {
                     >
                       {t("social_auth")} <RxDotFilled />
                     </span>
-                  </Link>
-                  <Link to="language" style={{ textDecoration: "none", color: "black" }}>
+                  </Link> */}
+                  {/* <Link to="language" style={{ textDecoration: "none", color: "black" }}>
                     <span
                       className="genersettingdropdown"
                       style={{
@@ -358,10 +358,10 @@ const Settings = () => {
                     >
                       {t("language")} <RxDotFilled />
                     </span>
-                  </Link>
+                  </Link> */}
                 </div>
               )}
-              <div
+              {/* <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -505,7 +505,7 @@ const Settings = () => {
                     </span>
                   </Link>
                 </div>
-              )}
+              )} */}
 
             </div>
           </div>
