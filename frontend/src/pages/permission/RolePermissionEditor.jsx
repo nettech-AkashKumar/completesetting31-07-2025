@@ -193,11 +193,6 @@ const Permission = () => {
       ) : (
         <p className="text-muted">Please select a role to edit permissions.</p>
       )}
-
-      <p className="mt-3 text-muted">
-        <strong>Selected Role:</strong> {selectedRole?.roleName || "None"}<br />
-        <strong>Role ID:</strong> {selectedRole?._id || "N/A"}
-      </p>
     </div>
   );
 };

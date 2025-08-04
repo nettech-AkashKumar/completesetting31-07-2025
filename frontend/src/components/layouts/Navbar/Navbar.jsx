@@ -18,6 +18,7 @@ import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import Activities from './activities.jsx';
 import { io } from 'socket.io-client';
+import { useAuth } from '../../auth/AuthContext.jsx';
 
 
 function Navbar() {
@@ -26,6 +27,8 @@ function Navbar() {
   const fullscreenBtnRef = useRef(null);
   const toggleBtnRef = useRef(null);
   const { mobileOpen, handleMobileToggle } = useSidebar();
+   const { user } = useAuth();
+    const id = user?._id;
   
   // Notification badge state
   const [unreadCount, setUnreadCount] = useState(0);
@@ -438,7 +441,7 @@ function Navbar() {
               </li>
               {/* Settings */}
               <li className="nav-item nav-item-box">
-                <Link to="/general-settings"><TbSettings className="ti" /></Link>
+                <Link to={`profile/${id}`}><TbSettings className="ti" /></Link>
               </li>
 
               {/* Profile */}

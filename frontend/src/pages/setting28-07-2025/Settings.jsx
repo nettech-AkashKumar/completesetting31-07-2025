@@ -17,6 +17,7 @@ import { useAuth } from "../../components/auth/AuthContext.jsx";
 const Settings = () => {
   const [showGeneralSettings, setShowGeneralSettings] = useState(false);
   const [showWebsiteSettings, setShowWebsitelSettings] = useState(false);
+  const [showInvoice, setShowInvoice] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const { user } = useAuth();
   const id = user?._id;
@@ -24,6 +25,10 @@ const Settings = () => {
 
   const toggleDropdown = (name) => {
     setOpenDropdown((prev) => (prev === name ? null : name))
+  }
+
+  const toggleInvoiceDropdown = () => {
+    setShowInvoice((prev) => !prev)
   }
   const { t } = useTranslation();
 
@@ -386,7 +391,7 @@ const Settings = () => {
                 <div
                   style={{ paddingBottom: "20px", display: "flex", flexDirection: "column", }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems:'center', cursor:'pointer', margin:'5px 0' }} onClick={toggleInvoiceDropdown}>
 
                     <span style={{ color: "#212B36", fontSize: "17px" }}>
                       {" "}
@@ -400,12 +405,12 @@ const Settings = () => {
                           width: "20px",
                           height: "20px",
                           transition: "transfrom 0.3s",
-                          transform: openDropdown === "appsetting" ? "rotate(360deg)" : "rotate(270deg)"
+                          transform: showInvoice ? "rotate(360deg)" : "rotate(270deg)"
                         }}
                       />
                     </span>
                   </div>
-                  {openDropdown === "appsetting" && (
+                  {showInvoice && (
                     <>
                       <Link to="" style={{ textDecoration: "none", color: "black" }}>
                         {" "}
