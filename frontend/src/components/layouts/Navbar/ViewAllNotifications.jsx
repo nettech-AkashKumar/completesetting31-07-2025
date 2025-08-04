@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { 
   FaBell, 
   FaCheck, 
+  FaTrash, 
   FaCheckDouble, 
   FaUser,
   FaClock,
@@ -135,6 +136,32 @@ const ViewAllNotifications = () => {
     }
   };
 
+  // Delete notification
+  const deleteNotification = async (notificationId) => {
+    try {
+      const token = getToken();
+      await axios.delete(
+        `${BASE_URL}/api/notifications/${notificationId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          data: { userId: user._id }
+        }
+      );
+
+      // Remove from local state
+      setNotifications(prev => 
+        prev.filter(notification => notification._id !== notificationId)
+      );
+
+      toast.success('Notification deleted');
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+      toast.error('Failed to delete notification');
+    }
+  };
+
 
 
   // Format timestamp
@@ -219,25 +246,34 @@ const ViewAllNotifications = () => {
                 <div>
                   {notification.sender?.profileImage ? (
                     <img 
-                      src={notification.sender.profileImage} 
+                      src={notification.sender.profileImage.url || notification.sender.profileImage} 
                       alt="Sender" 
-                      style={{width:'50px',borderRadius:'50%',objectFit:'cover'}}
+                      style={{width:'50px',height:'50px',borderRadius:'50%',objectFit:'cover'}}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
                     />
-                  ) : (
-                    <div style={{
-                      width:'50px',
-                      height:'50px',
-                      borderRadius:'50%',
-                      backgroundColor:'#e9ecef',
-                      display:'flex',
-                      alignItems:'center',
-                      justifyContent:'center',
-                      color:'#6c757d',
-                      fontSize:'20px'
-                    }}>
-                      <FaUser />
-                    </div>
-                  )}
+                  ) : null}
+                  <div style={{
+                    width:'50px',
+                    height:'50px',
+                    borderRadius:'50%',
+                    backgroundColor:'#e9ecef',
+                    display: notification.sender?.profileImage ? 'none' : 'flex',
+                    alignItems:'center',
+                    justifyContent:'center',
+                    color:'#6c757d',
+                    fontSize:'16px',
+                    fontWeight:'600'
+                  }}>
+                    {notification.sender?.firstName && notification.sender?.lastName 
+                      ? `${notification.sender.firstName.charAt(0)}${notification.sender.lastName.charAt(0)}`
+                      : notification.sender?.firstName 
+                        ? notification.sender.firstName.substring(0, 2).toUpperCase()
+                        : 'U'
+                    }
+                  </div>
                 </div>
                 <div style={{flex:1}}>
                   <span style={{fontWeight:'500'}}>
@@ -276,6 +312,26 @@ const ViewAllNotifications = () => {
                       <FaCheck />
                     </button>
                   )}
+                  
+                  <button
+                    style={{
+                      width:'24px',
+                      height:'24px',
+                      border:'none',
+                      borderRadius:'4px',
+                      display:'flex',
+                      alignItems:'center',
+                      justifyContent:'center',
+                      cursor:'pointer',
+                      background:'#dc3545',
+                      color:'white',
+                      fontSize:'10px'
+                    }}
+                    onClick={() => deleteNotification(notification._id)}
+                    title="Delete notification"
+                  >
+                    <FaTrash />
+                  </button>
                 </div>
               </div>
             ))}

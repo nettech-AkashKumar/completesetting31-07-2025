@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { TbBell, TbCirclePlus, TbCommand, TbDeviceLaptop, TbDotsVertical, TbFileText, TbLanguage, TbLogout, TbMail, TbMaximize, TbSearch, TbSettings, TbUserCircle } from 'react-icons/tb';
+import { FaTrash } from 'react-icons/fa';
 import { io } from 'socket.io-client';
 
 const Activities = ({ onNotificationsRead }) => {
@@ -109,6 +110,35 @@ const Activities = ({ onNotificationsRead }) => {
     }
   };
 
+  // Delete notification
+  const deleteNotification = async (notificationId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const userId = user?._id || user?.id;
+      
+      const response = await fetch(`${backendurl}/api/notifications/${notificationId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId }),
+      });
+      
+      if (response.ok) {
+        // Remove from local state
+        setNotifications(prev => 
+          prev.filter(notification => notification._id !== notificationId)
+        );
+        
+        // Update unread count if needed
+        fetchUnreadCount();
+      }
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+    }
+  };
+
   // Format time ago
   const formatTimeAgo = (timestamp) => {
     const now = new Date();
@@ -195,11 +225,40 @@ const Activities = ({ onNotificationsRead }) => {
                                 </div>
                               </div>
                             </Link>
+                            
+                            {/* Delete button */}
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                deleteNotification(notification._id);
+                              }}
+                              style={{
+                                position: 'absolute',
+                                top: '20px',
+                                right: '10px',
+                                width: '20px',
+                                height: '20px',
+                                border: 'none',
+                                borderRadius: '50%',
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                fontSize: '25px',
+                                zIndex: 10
+                              }}
+                              title="Delete notification"
+                            >
+                              <FaTrash style={{fontSize: '25px'}} />
+                            </button>
+                            
                             {!notification.read && (
                               <div style={{
                                 position: 'absolute',
                                 top: '10px',
-                                right: '10px',
+                                right: '35px',
                                 width: '8px',
                                 height: '8px',
                                 backgroundColor: '#FFD700',
